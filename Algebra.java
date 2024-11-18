@@ -48,8 +48,12 @@ public class Algebra {
         int result = 0;
         boolean negative = (x1 < 0) ^ (x2 < 0);
 
-        if (x1 < 0) x1 = minus(0, x1);
-        if (x2 < 0) x2 = minus(0, x2);
+        if (x1 < 0) {
+            x1 = minus(0, x1);
+        }
+        if (x2 < 0) {
+            x2 = minus(0, x2);
+        }
 
         for (int i = 0; i < x2; i++) {
             result = plus(result, x1);
@@ -69,10 +73,14 @@ public class Algebra {
     // Returns the integer part of x1 / x2 
     public static int div(int x1, int x2) {
         int quotient = 0;
-        boolean negative = (x1 < 0) ^ (x2 < 0); 
+        boolean negative = (x1 < 0) ^ (x2 < 0);
 
-        if (x1 < 0) x1 = minus(0, x1);
-        if (x2 < 0) x2 = minus(0, x2);
+        if (x1 < 0) {
+            x1 = minus(0, x1);
+        }
+        if (x2 < 0) {
+            x2 = minus(0, x2);
+        }
 
         while (x1 >= x2) {
             x1 = minus(x1, x2);
@@ -85,8 +93,12 @@ public class Algebra {
     public static int mod(int x1, int x2) {
         boolean negative = x1 < 0;
 
-        if (x1 < 0) x1 = minus(0, x1);
-        if (x2 < 0) x2 = minus(0, x2);
+        if (x1 < 0) {
+            x1 = minus(0, x1);
+        }
+        if (x2 < 0) {
+            x2 = minus(0, x2);
+        }
 
         while (x1 >= x2) {
             x1 = minus(x1, x2);
@@ -96,7 +108,7 @@ public class Algebra {
 
     // Returns the integer part of sqrt(x) 
     public static int sqrt(int x) {
-		int result = 0;
+        int result = 0;
         while (times(result, result) <= x) {
             result++;
         }
