@@ -3,7 +3,7 @@
 // Math.sqrt. All the functions in this class operate on int values and
 // return int values.
 
-public class Algebra {
+public class TestAlgebra {
 
     public static void main(String args[]) {
         // Tests some of the operations
