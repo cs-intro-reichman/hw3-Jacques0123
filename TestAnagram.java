@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Anagram {
+public class TestAnagram {
     public static void main(String args[]) {
         System.out.println(isAnagram("silent", "listen"));  // true
         System.out.println(isAnagram("William Shakespeare", "I am a weakish speller")); // true
