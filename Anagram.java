@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Anagram {
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         System.out.println(isAnagram("silent", "listen"));  // true
         System.out.println(isAnagram("William Shakespeare", "I am a weakish speller")); // true
         System.out.println(isAnagram("Madam Curie", "Radium came")); // true
@@ -12,7 +12,7 @@ public class Anagram {
         System.out.println("silent and " + randomAnagram("silent") + " are anagrams.");
 
         String str = "1234567";
-        Boolean pass = true;
+        boolean pass = true;
         for (int i = 0; i < 10; i++) {
             String randomAnagram = randomAnagram(str);
             System.out.println(randomAnagram);
@@ -34,7 +34,8 @@ public class Anagram {
     }
 
     public static String preProcess(String str) {
-        return str.toLowerCase().replaceAll("[^a-z]", "");
+        // Lowercase the string, retain alphabetic characters and spaces
+        return str.toLowerCase().replaceAll("[^a-z ]", "");
     }
 
     public static String randomAnagram(String str) {
