@@ -22,7 +22,7 @@ public class LoanCalc {
         System.out.println("Number of iterations: " + iterationCounter);
     }
 
-    private static double endBalance(double loan, double rate, int n, double payment) {
+    public static double endBalance(double loan, double rate, int n, double payment) {
         double balance = loan;
         for (int i = 0; i < n; i++) {
             balance = balance * (1 + rate) - payment;
@@ -33,7 +33,7 @@ public class LoanCalc {
     public static double bruteForceSolver(double loan, double rate, int n, double epsilon) {
         iterationCounter = 0;
         double payment = loan / n;
-        while (endBalance(loan, rate, n, payment) > 0) {
+        while (Math.abs(endBalance(loan, rate, n, payment)) > epsilon) {
             payment += epsilon;
             iterationCounter++;
         }
@@ -48,7 +48,11 @@ public class LoanCalc {
 
         while (hi - lo > epsilon) {
             mid = (lo + hi) / 2;
-            if (endBalance(loan, rate, n, mid) > 0) {
+            double balance = endBalance(loan, rate, n, mid);
+            if (Math.abs(balance) < epsilon) {
+                return mid;
+            }
+            if (balance > 0) {
                 lo = mid;
             } else {
                 hi = mid;
