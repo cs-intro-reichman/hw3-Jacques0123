@@ -3,31 +3,41 @@ public class LoanCalc {
     static double epsilon = 0.001;  // Approximation accuracy
     static int iterationCounter;    // Number of iterations 
 
-    // Gets the loan data and computes the periodical payment.
-    // Expects to get three command-line arguments: loan amount (double),
-    // interest rate (double, as a percentage), and number of payments (int).  
     public static void main(String[] args) {
         // Gets the loan data
         double loan = Double.parseDouble(args[0]);
-        double rate = Double.parseDouble(args[1]) / 100.0 / 12; // Convert annual rate to monthly decimal
-        int n = Integer.parseInt(args[2]);
-        System.out.println(String.format("Loan = %.2f, interest rate = %.1f%%, periods = %d", loan, rate * 12 * 100, n));
+        double annualRate = Double.parseDouble(args[1]); // Annual interest rate as a percentage
+        int n = Integer.parseInt(args[2]); // Total number of payments
+        double monthlyRate = annualRate / 100.0 / 12; // Convert annual rate to monthly rate
 
-        // Computes the periodical payment using brute force search
+        System.out.println(String.format("Loan = %.2f, interest rate = %.1f%%, periods = %d", loan, annualRate, n));
+
+        // Calculate the periodical payment using the formula
+        double exactPayment = calculatePayment(loan, monthlyRate, n);
+        System.out.println(String.format("\nExact periodical payment: %.2f", exactPayment));
+
+        // Compute the payment using brute force search
         System.out.print("\nPeriodical payment, using brute force: ");
-        double bruteForcePayment = bruteForceSolver(loan, rate, n, epsilon);
+        double bruteForcePayment = bruteForceSolver(loan, monthlyRate, n, epsilon);
         System.out.println(String.format("%.0f", bruteForcePayment));
         System.out.println("Number of iterations: " + iterationCounter);
 
-        // Computes the periodical payment using bisection search
+        // Compute the payment using bisection search
         System.out.print("\nPeriodical payment, using bisection search: ");
-        double bisectionPayment = bisectionSolver(loan, rate, n, epsilon);
+        double bisectionPayment = bisectionSolver(loan, monthlyRate, n, epsilon);
         System.out.println(String.format("%.0f", bisectionPayment));
         System.out.println("Number of iterations: " + iterationCounter);
     }
 
-    // Computes the ending balance of a loan, given the loan amount, the periodical
-    // interest rate (as a decimal), the number of periods (n), and the periodical payment.
+    // Calculate the payment using the standard loan payment formula
+    public static double calculatePayment(double loan, double rate, int n) {
+        if (rate == 0) {
+            return loan / n; // Edge case: No interest
+        }
+        return (loan * rate) / (1 - Math.pow(1 + rate, -n));
+    }
+
+    // Compute the ending balance of a loan, given the loan amount, periodical interest rate, and payments
     private static double endBalance(double loan, double rate, int n, double payment) {
         double balance = loan;
         for (int i = 0; i < n; i++) {
@@ -36,8 +46,7 @@ public class LoanCalc {
         return balance;
     }
 
-    // Uses sequential search to compute an approximation of the periodical payment
-    // that will bring the ending balance of a loan close to 0.
+    // Uses sequential search to approximate the payment
     public static double bruteForceSolver(double loan, double rate, int n, double epsilon) {
         iterationCounter = 0;
         double payment = loan / n; // Initial guess
@@ -48,12 +57,11 @@ public class LoanCalc {
         return payment;
     }
 
-    // Uses bisection search to compute an approximation of the periodical payment
-    // that will bring the ending balance of a loan close to 0.
+    // Uses bisection search to approximate the payment
     public static double bisectionSolver(double loan, double rate, int n, double epsilon) {
         iterationCounter = 0;
-        double lo = 0;          // Lower bound
-        double hi = loan;       // Upper bound
+        double lo = 0;       // Lower bound
+        double hi = loan;    // Upper bound
         double mid;
 
         while (hi - lo > epsilon) {
