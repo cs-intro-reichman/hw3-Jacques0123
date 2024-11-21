@@ -34,7 +34,7 @@ public class Anagram {
     }
 
     public static String preProcess(String str) {
-        return str.toLowerCase().replaceAll("[^a-z]", "");
+        return str.toLowerCase().replaceAll("[^a-z ]", "");
     }
 
     public static String randomAnagram(String str) {
