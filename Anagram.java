@@ -33,7 +33,7 @@ public class Anagram {
         return Arrays.equals(arr1, arr2);
     }
 
-    private static String preProcess(String str) {
+    public static String preProcess(String str) {
         return str.toLowerCase().replaceAll("[^a-z]", "");
     }
 
