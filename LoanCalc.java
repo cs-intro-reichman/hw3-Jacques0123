@@ -36,27 +36,30 @@ public class LoanCalc {
 
     public static double bruteForceSolver(double loan, double rate, int n, double epsilon) {
         iterationCounter = 0;
-        double payment = loan / n;
-        double increment = 0.00001; // Increment by 0.01 for brute force
-        
+        double payment = loan / n; // Start with an initial guess (no interest)
+        double increment = 0.01;  // Increment for brute force search
+    
         while (true) {
             double balance = endBalance(loan, rate, n, payment);
             iterationCounter++;
-
-            // Check if the balance is within epsilon range
+    
+            // Check if the balance is within epsilon range (solution found)
             if (Math.abs(balance) <= epsilon) {
                 break;
             }
-
+    
+            // Increment payment for the next iteration
             payment += increment;
-
-            // Safety check to prevent infinite loop
-            if (iterationCounter > 10000000) {
-                throw new RuntimeException("Brute force solver exceeded maximum iterations");
+    
+            // Safety check to prevent infinite loop if solution is missed
+            if (payment > loan) {
+                throw new RuntimeException("Brute force solver failed to converge");
             }
         }
+    
         return payment;
     }
+    
 
     public static double bisectionSolver(double loan, double rate, int n, double epsilon) {
         iterationCounter = 0;
