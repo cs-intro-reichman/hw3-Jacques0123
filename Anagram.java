@@ -57,9 +57,9 @@ public class Anagram {
 	
 	// Returns a preprocessed version of the given string: all the letter characters are converted
 	// to lower-case, and all the other characters are deleted, except for spaces, which are left
-	// as is. For example, the string "What? No way!" becomes "whatnoway"
+	// as is. For example, the string "What? No way!" becomes "what no way"
 	public static String preProcess(String str) {
-		return str.replaceAll("[^a-zA-Z]", "").toLowerCase();
+		return str.replaceAll("[^a-zA-Z ]", "").toLowerCase();
 	} 
 	
 	// Returns a random anagram of the given string. The random anagram consists of the same
