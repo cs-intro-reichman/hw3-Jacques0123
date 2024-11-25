@@ -1,81 +1,81 @@
-/** Functions for checking if a given string is an anagram. */
-import java.util.Random;
+// Computes the periodical payment necessary to pay a given loan.
+public class LoanCalc {
 
-public class Anagram {
-	public static void main(String args[]) {
-		// Tests the isAnagram function.
-		System.out.println(isAnagram("silent","listen"));  // true
-		System.out.println(isAnagram("William Shakespeare","I am a weakish speller")); // true
-		System.out.println(isAnagram("Madam Curie","Radium came")); // true
-		System.out.println(isAnagram("Tom Marvolo Riddle","I am Lord Voldemort")); // true
+	static double epsilon = 0.001;  // Approximation accuracy
+	static int iterationCounter;    // Number of iterations 
 
-		// Tests the preProcess function.
-		System.out.println(preProcess("What? No way!!!"));
-		
-		// Tests the randomAnagram function.
-		System.out.println("silent and " + randomAnagram("silent") + " are anagrams.");
-		
-		// Performs a stress test of randomAnagram 
-		String str = "1234567";
-		Boolean pass = true;
-		//// 10 can be changed to much larger values, like 1000
-		for (int i = 0; i < 10; i++) {
-			String randomAnagram = randomAnagram(str);
-			System.out.println(randomAnagram);
-			pass = pass && isAnagram(str, randomAnagram);
-			if (!pass) break;
-		}
-		System.out.println(pass ? "test passed" : "test Failed");
-	}  
+	// Gets the loan data and computes the periodical payment.
+    // Expects to get three command-line arguments: loan amount (double),
+    // interest rate (double, as a percentage), and number of payments (int).  
+	public static void main(String[] args) {		
+		// Gets the loan data
+		double loan = Double.parseDouble(args[0]);
+		double rate = Double.parseDouble(args[1]);
+		int n = Integer.parseInt(args[2]);
+		System.out.println("Loan = " + loan + ", interest rate = " + rate + "% , periods = " + n);
 
-	// Returns true if the two given strings are anagrams, false otherwise.
-	public static boolean isAnagram(String str1, String str2) {
-		str1 = preProcess(str1);
-		str2 = preProcess(str2);
+		// Computes the periodical payment using brute force search
+		System.out.print("\nPeriodical payment, using brute force: ");
+		System.out.println((int) bruteForceSolver(loan, rate, n, epsilon));
+		System.out.println("number of iterations: " + iterationCounter);
 
-		if (str1.length() != str2.length()) {
-			return false;
-		}
-
-		int[] charCounts = new int[26];
-		for (char c : str1.toCharArray()) {
-			charCounts[c - 'a']++;
-		}
-
-		for (char c : str2.toCharArray()) {
-			charCounts[c - 'a']--;
-		}
-
-		for (int count : charCounts) {
-			if (count != 0) {
-				return false;
-			}
-		}
-
-		return true;
+		// Computes the periodical payment using bisection search
+		System.out.print("\nPeriodical payment, using bi-section search: ");
+		System.out.println((int) bisectionSolver(loan, rate, n, epsilon));
+		System.out.println("number of iterations: " + iterationCounter);
 	}
-	
-	// Returns a preprocessed version of the given string: all the letter characters are converted
-	// to lower-case, and all the other characters are deleted, except for spaces, which are left
-	// as is. For example, the string "What? No way!" becomes "what no way"
-	public static String preProcess(String str) {
-		return str.replaceAll("[^a-zA-Z ]", "").toLowerCase();
-	} 
-	
-	// Returns a random anagram of the given string. The random anagram consists of the same
-	// characters as the given string, re-arranged in a random order. 
-	public static String randomAnagram(String str) {
-		str = preProcess(str);
-		char[] chars = str.toCharArray();
-		Random rand = new Random();
 
-		for (int i = chars.length - 1; i > 0; i--) {
-			int j = rand.nextInt(i + 1);
-			char temp = chars[i];
-			chars[i] = chars[j];
-			chars[j] = temp;
+	private static double endBalance(double loan, double rate, int n, double payment) {
+		double balance = loan;
+		rate = rate / 100;
+		for (int i = 0; i < n; i++) {
+			balance = (balance - payment) * (1 + rate);
 		}
-
-		return new String(chars);
+		return balance;
 	}
+
+    public static double bruteForceSolver(double loan, double rate, int n, double epsilon) {
+        iterationCounter = 0;
+        double payment = loan / n;
+        double increment = 0.00001; // Increment by 0.01 for brute force
+        
+        while (true) {
+            double balance = endBalance(loan, rate, n, payment);
+            iterationCounter++;
+
+            // Check if the balance is within epsilon range
+            if (Math.abs(balance) <= epsilon) {
+                break;
+            }
+
+            payment += increment;
+
+            // Safety check to prevent infinite loop
+            if (iterationCounter > 10000000) {
+                throw new RuntimeException("Brute force solver exceeded maximum iterations");
+            }
+        }
+        return payment;
+    }
+
+    public static double bisectionSolver(double loan, double rate, int n, double epsilon) {
+        iterationCounter = 0;
+        double lo = loan / n;
+        double hi = loan;
+        double mid;
+
+        while (hi - lo > epsilon) {
+            mid = (lo + hi) / 2;
+            double balance = endBalance(loan, rate, n, mid);
+            if (balance > epsilon) {
+                lo = mid;
+            } else if (balance < -epsilon) {
+                hi = mid;
+            } else {
+                return mid;
+            }
+            iterationCounter++;
+        }
+        return (lo + hi) / 2;
+    }
 }
