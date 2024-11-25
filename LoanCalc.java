@@ -12,7 +12,7 @@ public class LoanCalc {
 		double loan = Double.parseDouble(args[0]);
 		double rate = Double.parseDouble(args[1]);
 		int n = Integer.parseInt(args[2]);
-		System.out.println("Loan = " + loan + ", interest rate = " + rate + "% , periods = " + n);
+		System.out.println("Loan = " + loan + ", interest rate = " + rate + "%, periods = " + n);
 
 		// Computes the periodical payment using brute force search
 		System.out.print("\nPeriodical payment, using brute force: ");
@@ -40,33 +40,27 @@ public class LoanCalc {
 	// the number of periods (n), and epsilon, the approximation's accuracy
 	// Side effect: modifies the class variable iterationCounter.
     public static double bruteForceSolver(double loan, double rate, int n, double epsilon) {
-        // Initialize the static iteration counter to 0
         iterationCounter = 0;
     
-        // Initial guess for the payment, g = loan / n
         double payment = loan / n;
     
-        // Increment step, epsilon
         double increment = epsilon;
     
-        // Perform the brute-force search
         while (true) {
-            // Compute the ending balance for the current payment guess
             double balance = endBalance(loan, rate, n, payment);
     
-            // Check if the ending balance is non-positive (close enough to 0)
             if (balance <= 0) {
-                break; // Exit the loop when a solution is found
+                break; 
             }
     
-            // Increment the payment guess
+            
             payment += increment;
     
-            // Increment the iteration counter
+            
             iterationCounter++;
         }
     
-        // Return the approximate solution
+        
         return payment;
     }
     
